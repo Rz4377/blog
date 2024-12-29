@@ -1,7 +1,8 @@
 import express, { Express, Request, Response } from "express";
 import dotenv from "dotenv";
-import { generativeModel } from "./utils";
+
 import bodyParser from "body-parser";
+import { chat } from "./utils";
 
 dotenv.config();
 
@@ -13,55 +14,79 @@ app.use(bodyParser.json())
 
 let chatContext: { role: string; content: string }[] = [];
 
-async function streamChat(msg:string) {
-  const chat = generativeModel.startChat();
-  chatContext.push({role:'user', content:msg});
-  console.log("Payload being sent: ", JSON.stringify({ contents: [{ text: msg }] }));
-  const result = await chat.sendMessageStream({
-    contents: [{ text: msg }], // Use "text" instead of "content" and avoid "role"
-  });
-  for await (const item of result.stream) {
-      console.log("Stream chunk: ", item.candidates[0].content.parts[0].text);
+async function streamChat(msg: string) {
+  try {
+    if (!msg || msg.trim() === '') {
+      throw new Error('The message cannot be empty.');
+    }
+
+    console.log("Message content:", msg);
+
+    // Updated payload format
+    const payload = {
+      messages: [
+        {
+          role: 'system',
+          content: `
+            You are a helpful assistant specialized in generating beautified React JSX code. 
+            Your task is to create a fully functional and responsive React component based on the content provided in the prompt.
+            The page you are creating is a blog page. 
+            The generated code should include proper structure, styling using inline styles or classNames, and reusable components where applicable.
+            Include meaningful comments for clarity and readability.
+          `,
+        },
+        { role: 'user', content: msg }, // Include user input
+      ],
+    };
+
+    console.log("Payload being sent to sendMessageStream:", payload);
+
+    // Call the API
+    const result = await chat.sendMessageStream(payload);
+
+    let responseText = '';
+    for await (const chunk of result.stream) {
+      const part = chunk?.candidates?.[0]?.content?.parts?.[0]?.text;
+      if (part) {
+        console.log('Stream chunk:', part);
+        responseText += part;
+      }
+    }
+
+    if (!responseText) {
+      throw new Error('The model returned an empty response.');
+    }
+
+    console.log('Aggregated response:', responseText);
+    return responseText;
+  } catch (error) {
+    console.error('Error during chat interaction:', error);
+    throw error;
   }
-
-  const aggregatedResponse = await result.response;
-  chatContext.push({
-    role: 'model',
-    content: aggregatedResponse.candidates[0].content.parts.map((part:any) => part.text).join(" "),
-  });
-
-  console.log('Aggregated response: ', JSON.stringify(aggregatedResponse));
-  return aggregatedResponse;
 }
 
-app.post("/chat", async(req: Request, res: Response) => {
-  console.log(req.body)
-  const {msg} = req.body;
-
-  if(typeof msg != "string"){
-    res.status(400).send("send the msg in string");
+app.post('/chat', async (req: Request, res: Response) => {
+  const { msg } = req.body;
+  console.log(req.body);
+  if (!msg) {
+    res.status(400).json({ error: 'Message is required' });
     return ;
   }
-  if (msg.toLowerCase() === "exit") {
-    chatContext = []; // Clear the context
-    res.status(200).json({ message: "Chat session ended. Goodbye!" });
-    return;
-  }
-  try{
-    const response = await streamChat(msg);
-    res.status(200).json({
-      content : response,
-      chatContext
-    })
-  }
-  catch(error){
-    console.log(error);
-    res.status(400).json({
-      error : "internal server error"
-    })
-  }
 
+  try {
+    const response = await streamChat(msg);
+
+    res.status(200).json({
+      content: response,
+    });
+  } catch (error) {
+    console.error('Error in /chat endpoint:', error);
+    res.status(500).json({
+      error: 'Internal server error',
+    });
+  }
 });
+
 
 app.listen(port, () => {
   console.log(`[server]: Server is running at http://localhost:${port}`);
