@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { BlogForm } from '../components/BlogForm';
+import { useState } from 'react';
+import { BlogCreationPage } from '../components/BlogForm';
 import type { BlogFormData } from '../types';
 
 export function AdminPage() {
@@ -37,7 +37,8 @@ export function AdminPage() {
       <div className="max-w-3xl mx-auto">
         <h1 className="text-3xl font-bold text-gray-100 mb-8">Create New Blog Post</h1>
         <div className="bg-gray-800 rounded-lg shadow-lg p-6">
-          <BlogForm onSubmit={handleSubmit} isLoading={isLoading} />
+          <BlogCreationPage  />
+          {/* <BlogForm onSubmit={handleSubmit} isLoading={isLoading} /> */}
         </div>
       </div>
     </div>

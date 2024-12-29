@@ -5,6 +5,7 @@ export interface BlogPost {
   imageUrl: string;
   createdAt: string;
   adLinks?: AdLink[];
+  status:string
 }
 
 export interface AdLink {

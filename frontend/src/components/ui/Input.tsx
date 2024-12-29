@@ -2,6 +2,10 @@ import React from 'react';
 
 interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   label?: string;
+  type?:string;
+  required?:boolean;
+  value?:string | number;
+  onChange:(event: React.ChangeEvent<HTMLInputElement>)=> void
 }
 
 export function Input({ label, id, className = '', ...props }: InputProps) {

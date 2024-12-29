@@ -2,8 +2,10 @@ import React from 'react';
 import { Loader2 } from 'lucide-react';
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  type?: "submit" | "reset" |"button" |undefined ;
+  className?:string;
   isLoading?: boolean;
-  variant?: 'primary' | 'secondary';
+  variant?: 'primary' | 'secondary' | 'danger';
   icon?: React.ReactNode;
 }
 
@@ -19,11 +21,13 @@ export function Button({
   
   const variants = {
     primary: "text-white bg-blue-600 hover:bg-blue-700 focus:ring-blue-500",
-    secondary: "text-blue-400 bg-gray-800 hover:bg-gray-700 focus:ring-blue-500"
+    secondary: "text-blue-400 bg-gray-800 hover:bg-gray-700 focus:ring-blue-500",
+    danger: "text-white bg-red-800 hover:bg-red-700 focus:ring-red-500"
   };
 
   return (
     <button
+      type={props.type || "button"}
       className={`${baseStyles} ${variants[variant]} ${className}`}
       disabled={isLoading || props.disabled}
       {...props}
