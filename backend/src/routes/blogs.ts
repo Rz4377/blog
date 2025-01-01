@@ -1,13 +1,15 @@
+require('dotenv').config();
 import {  PrismaClient } from "@prisma/client";
 import express from "express";
 const prisma = new PrismaClient();
 const router = express.Router();
+const ACCESS_TOKEN = process.env.ACCESS_TOKEN;
 
 // Create a new blog
 router.post("/blogs", async (req, res) => {
     const { header, products, footer , accessToken} = req.body;
 
-    if(accessToken != "d]JG2t'~Anr^'yy)2nZWhXtU"){
+    if(accessToken != ACCESS_TOKEN){
       res.status(401).json({
         error:"Unauthorized"
       })
