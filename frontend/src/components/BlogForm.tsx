@@ -13,6 +13,7 @@ export function BlogForm() {
   const [headerData, setHeaderData] = useState({});
   const [relatedProducts, setRelatedProducts] = useState([]);
   const [footerData, setFooterData] = useState({});
+  const [accessToken, setAccessToken] = useState("");
 
   // Memoize callback functions
   const handleHeaderChange = useCallback((data: any) => {
@@ -32,11 +33,10 @@ export function BlogForm() {
       header: headerData,
       products: relatedProducts,
       footer: footerData,
+      accessToken:accessToken
     };
   
-    try {
-      console.log(JSON.stringify(blogData)); // Log the data being sent
-  
+    try {  
       // Send the POST request using Axios
       const response = await axios.post(`${BACKEND_URL}/api/blogs`, blogData, {
         headers: { "Content-Type": "application/json" },
@@ -68,11 +68,25 @@ export function BlogForm() {
       <EditableFooter isDark={true} onChange={handleFooterChange} />
       <br />
       {/* Submit Button */}
-      <div className="pt-8 border-t border-gray-700 flex justify-center">
-        <Button onClick={handleSubmit} variant="primary">
-          Submit Blog
-        </Button>
+      <div className="pt-8 border-t border-gray-700 flex flex-col items-center space-y-4">
+      {/* Input Field */}
+      <div className="relative w-80">
+        <input
+          type="text"
+          placeholder="Enter your access token"
+          className="w-full px-4 py-3 border border-gray-600 rounded-lg bg-gray-800 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200"
+          onChange={(e:any)=>setAccessToken(e.target.value)}
+        />
+        <span className="absolute inset-y-0 right-3 flex items-center text-gray-400">
+          🔒
+        </span>
       </div>
+
+      {/* Submit Button */}
+      <Button onClick={handleSubmit} variant="primary">
+        Submit Blog
+      </Button>
+    </div>
     </article>
   );
 }

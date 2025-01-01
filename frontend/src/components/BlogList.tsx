@@ -1,71 +1,32 @@
-import type { BlogPost } from '../types';
-import { Loader2 } from 'lucide-react';
-import { useTheme } from '../context/ThemeContext';
+import React from 'react';
+
+interface Blog {
+  id: number;
+  title: string;
+  authorName: string;
+  publishDate: string;
+}
 
 interface BlogListProps {
-  posts: BlogPost[];
+  posts: Blog[];
+  onBlogClick: (id: number) => void;
 }
 
-export function BlogList({ posts }: BlogListProps) {
-  const { theme } = useTheme();
-  const isDark = theme === 'dark';
-
+export const BlogList: React.FC<BlogListProps> = ({ posts, onBlogClick }) => {
   return (
-    <div className="space-y-8">
+    <ul className="space-y-4">
       {posts.map((post) => (
-        <article
+        <li
           key={post.id}
-          className={`rounded-lg shadow-lg overflow-hidden ${
-            isDark ? 'bg-gray-800' : 'bg-gray-100'
-          }`}
+          className="p-4 border rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 cursor-pointer"
+          onClick={() => onBlogClick(post.id)}
         >
-          {post.imageUrl && (
-            <img
-              src={post.imageUrl}
-              alt={post.title}
-              className="w-full h-64 object-cover"
-            />
-          )}
-          <div className="p-6">
-            <h2
-              className={`text-2xl font-bold mb-4 ${
-                isDark ? 'text-gray-100' : 'text-gray-900'
-              }`}
-            >
-              {post.title}
-            </h2>
-            {post.status === 'generating' ? (
-              <div
-                className={`flex items-center space-x-2 ${
-                  isDark ? 'text-gray-400' : 'text-gray-600'
-                }`}
-              >
-                <Loader2 className="animate-spin h-4 w-4" />
-                <span>Generating content...</span>
-              </div>
-            ) : (
-              <div
-                className={`prose max-w-none ${
-                  isDark ? 'prose-invert text-gray-300' : 'text-gray-800'
-                }`}
-              >
-                {post.content.split('\n').map((paragraph, index) => (
-                  <p key={index} className="mb-4">
-                    {paragraph}
-                  </p>
-                ))}
-              </div>
-            )}
-            <div
-              className={`mt-4 text-sm ${
-                isDark ? 'text-gray-400' : 'text-gray-600'
-              }`}
-            >
-              Created on {new Date(post.createdAt).toLocaleDateString()}
-            </div>
-          </div>
-        </article>
+          <h2 className="text-xl font-bold">{post.title}</h2>
+          <p className="text-sm text-gray-600 dark:text-gray-400">
+            By {post.authorName} on {post.publishDate}
+          </p>
+        </li>
       ))}
-    </div>
+    </ul>
   );
-}
+};

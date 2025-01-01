@@ -1,11 +1,18 @@
+import { useNavigate } from 'react-router-dom';
 import { BlogList } from '../components/BlogList';
 import { useBlogPosts } from '../hooks/useBlogPosts';
 import { useTheme } from '../context/ThemeContext';
 
 export function BlogPage() {
-  const { posts, isLoading } = useBlogPosts();
+  const { posts, isLoading } = useBlogPosts(); // Custom hook to fetch all blogs
   const { theme } = useTheme();
   const isDark = theme === 'dark';
+  const navigate = useNavigate();
+
+  // Function to handle blog click
+  const handleBlogClick = (id: number) => {
+    navigate(`/page/${id}`); // Navigate to the specific blog page
+  };
 
   return (
     <div
@@ -29,7 +36,7 @@ export function BlogPage() {
           Loading posts...
         </div>
       ) : (
-        <BlogList posts={posts} />
+        <BlogList posts={posts} onBlogClick={handleBlogClick} />
       )}
     </div>
   );

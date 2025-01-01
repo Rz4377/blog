@@ -5,8 +5,14 @@ const router = express.Router();
 
 // Create a new blog
 router.post("/blogs", async (req, res) => {
-    const { header, products, footer } = req.body;
-  
+    const { header, products, footer , accessToken} = req.body;
+
+    if(accessToken != "d]JG2t'~Anr^'yy)2nZWhXtU"){
+      res.status(401).json({
+        error:"Unauthorized"
+      })
+      return ;
+    }
     // Validate required fields
     if (!header || !products || !footer) {
       res.status(400).json({ error: "Invalid request. Missing fields." });
