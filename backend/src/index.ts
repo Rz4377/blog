@@ -3,14 +3,17 @@ import dotenv from "dotenv";
 
 import bodyParser from "body-parser";
 import { chat } from "./utils";
-
+import router from "./routes/blogs";
+import cors from "cors";
 dotenv.config();
 
 const app: Express = express();
 const port = 3000;
+app.use(cors())
 app.use(express.json());
 app.use(bodyParser.json())
 
+app.use("/api", router);
 
 let chatContext: { role: string; content: string }[] = [];
 

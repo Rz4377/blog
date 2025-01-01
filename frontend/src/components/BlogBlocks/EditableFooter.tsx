@@ -1,6 +1,12 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
-export const EditableFooter = ({ isDark }: { isDark: boolean }) => {
+export const EditableFooter = ({
+  isDark,
+  onChange,
+}: {
+  isDark: boolean;
+  onChange?: (data: { authorName: string; authorTitle: string; imageUrl: string }) => void;
+}) => {
   const [authorName, setAuthorName] = useState("John Doe");
   const [authorTitle, setAuthorTitle] = useState("Content Creator & YouTube Expert");
   const [imageUrl, setImageUrl] = useState(
@@ -15,9 +21,16 @@ export const EditableFooter = ({ isDark }: { isDark: boolean }) => {
     }
   };
 
+  // Notify parent of changes
+  useEffect(() => {
+    if (onChange) {
+      onChange && onChange({ authorName, authorTitle, imageUrl });
+    }
+  }, [authorName, authorTitle, imageUrl, onChange]);
+
   return (
     <footer
-      className={`mt-8 sm:mt-12 pt-6 sm:pt-8 border-t ${
+      className={`mt-8 sm:mt-12 px-10 pt-6 sm:pt-8 border-t ${
         isDark ? "border-gray-700" : "border-gray-200"
       }`}
     >
@@ -42,9 +55,7 @@ export const EditableFooter = ({ isDark }: { isDark: boolean }) => {
             />
           </div>
           <div>
-            <label className="block text-sm mb-1 font-medium">
-              Author Name
-            </label>
+            <label className="block text-sm mb-1 font-medium">Author Name</label>
             <input
               type="text"
               value={authorName}
@@ -55,9 +66,7 @@ export const EditableFooter = ({ isDark }: { isDark: boolean }) => {
                   : "bg-gray-100 text-gray-900 border-gray-300"
               }`}
             />
-            <label className="block text-sm mt-2 mb-1 font-medium">
-              Author Title
-            </label>
+            <label className="block text-sm mt-2 mb-1 font-medium">Author Title</label>
             <input
               type="text"
               value={authorTitle}

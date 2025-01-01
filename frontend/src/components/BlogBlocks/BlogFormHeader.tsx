@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Dumbbell, Youtube, Camera, Users, Settings, Edit3, Share2, Search, Star, Heart, Globe, Music, Trophy, TrendingUp, Bell } from 'lucide-react';
-import BlogField from './BlogField';
+import BlogField, { Section } from './BlogField';
 
 const ICONS = [
   { name: 'Dumbbell', component: Dumbbell },
@@ -20,14 +20,24 @@ const ICONS = [
   { name: 'Bell', component: Bell },
 ];
 
-export function BlogFormHeader() {
+export function BlogFormHeader({onChange}:any) {
   const [icon, setIcon] = useState('Dumbbell');
   const [title, setTitle] = useState('How to Create Your First YouTube Channel: A Complete Guide');
   const [image, setImage] = useState('https://images.unsplash.com/photo-1626785774573-4b799315345d?auto=format&fit=crop&q=80&w=2071');
   const [publishDate, setPublishDate] = useState('March 14, 2024');
   const [readTime, setReadTime] = useState('10 min read');
+  const [sections, setSections] = useState<Section[]>([]);
 
   const SelectedIcon = ICONS.find((item) => item.name === icon)?.component || Dumbbell;
+
+  const handleDataChange = () => {
+    if (onChange) {
+      onChange({ icon, title, image, publishDate, readTime , sections});
+    }
+  };
+
+  // Trigger onChange whenever relevant state changes
+  useEffect(handleDataChange, [icon, title, image, publishDate, readTime,sections]);
 
   return (
     <article
@@ -99,7 +109,7 @@ export function BlogFormHeader() {
       </div>
 
       {/* BlogField (Black Box) */}
-      <BlogField />
+      <BlogField onChange={setSections} />
     </article>
   );
 }

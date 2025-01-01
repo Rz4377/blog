@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Camera, Users, Settings, Edit3, Share2, Search, Star, Heart, Globe, Music } from 'lucide-react';
 
 import { Button } from '../ui/Button';
@@ -40,9 +40,9 @@ interface SingleParagraphSection {
   list: string[];
 }
 
-type Section = TwoColumnSection | SingleParagraphSection;
+export type Section = TwoColumnSection | SingleParagraphSection;
 
-export default function BlogField() {
+export default function BlogField({ onChange }: { onChange: (sections: Section[]) => void }) {
     const isDark = true;
     const [sections, setSections] = useState<Section[]>([
       {
@@ -75,7 +75,11 @@ export default function BlogField() {
         ],
       },
     ]);
-  
+
+    useEffect(() => {
+      if (onChange) onChange(sections);
+    }, [sections, onChange]);
+
     const addSection = (type: 'single-paragraph' | 'two-column') => {
       const newSection:Section =
         type === 'single-paragraph'
