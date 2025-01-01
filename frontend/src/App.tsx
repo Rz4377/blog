@@ -10,6 +10,7 @@ import { BlogPage } from './pages/BlogPage';
 import { AdminPage } from './pages/AdminPage';
 import { AuthPage } from './pages/AuthPage';
 import { useTheme } from './context/ThemeContext';
+import { BlogPageRender } from './BlogPageRender/BlogPageRender';
 
 export default function App() {
   const { theme } = useTheme();
@@ -26,6 +27,7 @@ export default function App() {
               <Route path="/" element={<HomePage />} />
               <Route path="/blog" element={<BlogPage />} />
               <Route path="/sample" element={<BlogPost />} />
+              <Route path="/page/:id" element={<BlogPageRender />} />
               <Route path="/auth" element={<AuthPage />} />
               <Route
                 path="/admin"

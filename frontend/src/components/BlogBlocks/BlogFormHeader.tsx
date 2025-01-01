@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Dumbbell, Youtube, Camera, Users, Settings, Edit3, Share2, Search, Star, Heart, Globe, Music, Trophy, TrendingUp, Bell } from 'lucide-react';
 import BlogField, { Section } from './BlogField';
 
-const ICONS = [
+export const ICONS = [
   { name: 'Dumbbell', component: Dumbbell },
   { name: 'Youtube', component: Youtube },
   { name: 'Camera', component: Camera },
